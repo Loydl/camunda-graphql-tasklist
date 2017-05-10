@@ -44,7 +44,9 @@ module.exports = {
 
         new webpack.DefinePlugin(
             {
-                __CAMUNDA_GRAPHQL_SERVER__: JSON.stringify(process.env.CAMUNDA_GRAPHQL_SERVER)
+                __CAMUNDA_GRAPHQL_SERVER__: JSON.stringify(process.env.CAMUNDA_GRAPHQL_SERVER),
+                __LOGIN_NAME__: JSON.stringify(process.env.LOGIN_NAME),
+                __LOGIN_PASSWORD__: JSON.stringify(process.env.LOGIN_PASSWORD)
             }
         ),
 
