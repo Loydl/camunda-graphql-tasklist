@@ -9,7 +9,7 @@ const Container = ({ match }) => {
             <div className='row'>
                 <div className='col-md-2'>
                     <ul className='list-group'>
-                        <li className='list-group-item'><Link to={`${match.url}/demo`}>My Tasks</Link></li>
+                        <li className='list-group-item'><Link to={`${match.url}/myTasks`}>My Tasks</Link></li>
                         <li className='list-group-item'><Link to={`${match.url}/all`}>All Tasks</Link></li>
                     </ul>
                 </div>

@@ -8,6 +8,7 @@ var WEBPACK_DEV_SERVER_PORT = process.env.WEBPACK_DEV_SERVER_PORT || 3000;
 
 module.exports = {
     entry: [
+        'whatwg-fetch',
         'webpack/hot/dev-server',
         `webpack-dev-server/client?http://localhost:${WEBPACK_DEV_SERVER_PORT}`,
         './src/index.jsx'

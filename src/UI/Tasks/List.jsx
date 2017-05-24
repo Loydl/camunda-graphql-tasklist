@@ -5,6 +5,8 @@ import { Route, Link } from 'react-router-dom';
 
 import Task from './Task';
 
+//@todo highlight selected task
+
 const List = ({ match, data: { loading, tasks, error } }) => {
 
     function render() {
@@ -42,7 +44,7 @@ const query = gql`
 export default graphql(query, {
     options: ({ match }) => ({
         variables: {
-            assignee: match.params.userId === "all" ? null : match.params.userId
+            assignee: match.params.userId === 'myTasks' ? 'demo' : null
         }
     })
 })(List);
