@@ -2,8 +2,15 @@ import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import Form from 'react-jsonschema-form';
+import _ from 'underscore';
 
 const log = (type) => console.log.bind(console, type);
+
+const template = (json, variables) => {
+    return new Promise((resolve) => resolve(JSON.parse(JSON.stringify(json).replace(/\${(.*?)\}/g, (match, property) => {
+        return _.findWhere(variables, {name: property}).value
+    }))))
+};
 
 class Task extends React.Component {
 
@@ -19,6 +26,7 @@ class Task extends React.Component {
         const { data: { loading, task } } = this.props;
         if(!loading && task) fetch(`http://localhost:8080${task.contextPath}/${task.formKey}`)
             .then(res => res.json())
+            .then(res => template(res, task.variables))
             .then(json => this.setState({ json }))
             .catch(err => console.log(err));
     }
@@ -27,6 +35,7 @@ class Task extends React.Component {
         const { data: { loading, task } } = nextProps;
         if(!loading && task) fetch(`http://localhost:8080${task.contextPath}/${task.formKey}`)
             .then(res => res.json())
+            .then(res => template(res, task.variables))
             .then(json => this.setState({ json }))
             .catch(err => console.log(err));
     }
@@ -106,6 +115,10 @@ const query = gql`
             }
             formKey
             contextPath
+            variables {
+                name
+                value
+            }
         }
     }
 `;
