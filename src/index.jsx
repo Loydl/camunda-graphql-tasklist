@@ -3,6 +3,7 @@ import ReactDom from 'react-dom';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { loggedIn, getToken } from './utils/utils';
 
 import Container from './UI/Container';
 
@@ -15,9 +16,11 @@ networkInterface.use([{
         if (!req.options.headers) {
             req.options.headers = {};
         }
-        const auth = btoa(`${__LOGIN_NAME__}:${__LOGIN_PASSWORD__}`);
 
-        req.options.headers.Authorization = auth ? `Basic ${auth}` : null;
+        if (loggedIn()) {
+            const token = getToken();
+            req.options.headers.Authorization = `Bearer ${token}`
+        }
         next();
     }
 }]);

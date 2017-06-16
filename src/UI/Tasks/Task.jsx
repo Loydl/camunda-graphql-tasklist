@@ -12,6 +12,7 @@ const template = (json, variables) => {
     }))))
 };
 
+
 class Task extends React.Component {
 
     constructor() {
