@@ -3,6 +3,7 @@ import { Route , withRouter, Redirect } from 'react-router-dom';
 
 import Navbar from './Navbar';
 import TasksContainer from './Tasks/Container';
+import newProcess from './newProcess/newProcess';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login';
 
@@ -21,6 +22,7 @@ class Container extends React.Component {
                 <Navbar />
                 <Route path='/login' component={Login}/>
                 <ProtectedRoute path='/tasks' component={TasksContainer}/>
+                <ProtectedRoute path='/new' component={newProcess}/>
             </div>
         )
     }

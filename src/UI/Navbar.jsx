@@ -1,6 +1,6 @@
 import React from 'react';
 import { loggedIn, logout } from '../utils/utils';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 const Navbar = ({ history }) => {
     return (
@@ -10,10 +10,14 @@ const Navbar = ({ history }) => {
                     <a className="navbar-brand" href="/">Camunda Tasklist</a>
                 </div>
 
-                { loggedIn() ? <button className='btn btn-default navbar-btn pull-right' onClick={() => {
-                    logout();
-                    history.push('/')
-                }}>logout</button> : null }
+                <ul className="nav navbar-nav navbar-right">
+                    { loggedIn() ? <li><Link to="/new">start process</Link></li> : null }
+                    { loggedIn() ? <li><a onClick={() => {
+                        logout();
+                        history.push('/')
+                    }}>logout</a></li>
+                        : null }
+                </ul>
             </div>
         </nav>
     )

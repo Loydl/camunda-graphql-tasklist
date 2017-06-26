@@ -18,4 +18,15 @@ const logout = () => {
     localStorage.removeItem('id_token');
 };
 
-export { setToken, getToken, loggedIn, logout };
+const getType = (type) => {
+    const types = {
+        string: 'String',
+        integer: 'Int',
+        number: 'Float',
+        boolean: 'Boolean'
+    };
+
+    return types[type];
+};
+
+export { setToken, getToken, loggedIn, logout, getType };

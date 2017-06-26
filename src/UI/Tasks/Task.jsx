@@ -3,6 +3,8 @@ import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import Form from 'react-jsonschema-form';
 import _ from 'underscore';
+import { getType } from '../../utils/utils';
+import { query as tasks } from './List';
 
 const log = (type) => console.log.bind(console, type);
 
@@ -25,6 +27,8 @@ class Task extends React.Component {
 
     componentDidMount() {
         const { data: { loading, task } } = this.props;
+        this.setState({ json: null});
+
         if(!loading && task) fetch(`http://localhost:8080${task.contextPath}/${task.formKey}`)
             .then(res => res.json())
             .then(res => template(res, task.variables))
@@ -34,6 +38,8 @@ class Task extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const { data: { loading, task } } = nextProps;
+        this.setState({ json: null});
+
         if(!loading && task) fetch(`http://localhost:8080${task.contextPath}/${task.formKey}`)
             .then(res => res.json())
             .then(res => template(res, task.variables))
@@ -45,11 +51,15 @@ class Task extends React.Component {
         const { history, completeTask, data: {task }} = this.props;
 
         const variables = Object.entries(input.formData).map(([key, value]) => {
-            return { key, value }
+            return { key, value, valueType: getType(input.schema.properties[key].type) }
         });
 
         completeTask({
-            variables: { taskId: task.id, variables}
+            variables: { taskId: task.id, variables},
+            refetchQueries: [{
+                query: tasks,
+                variables: { assignee: null },
+            }],
         })
             .then(({ data }) => {
                 console.log(data);
@@ -63,11 +73,15 @@ class Task extends React.Component {
         const { history, claimTask, data: {task }} = this.props;
 
         claimTask({
-            variables: { taskId: task.id}
+            variables: { taskId: task.id},
+            refetchQueries: [{
+                query: tasks,
+                variables: { assignee: 'demo' },
+            }],
         })
             .then(({ data }) => {
                 console.log(data);
-                history.push(`/tasks/myTask/${data.claimTask.id}`);
+                history.push(`/tasks/myTasks/${data.claimTask.id}`);
             }).catch((error) => {
             console.log('there was an error sending the query', error);
         })
@@ -93,7 +107,11 @@ class Task extends React.Component {
                             { this.state.json ? <Form schema={this.state.json}
                                                       onChange={log("changed")}
                                                       onSubmit={this.completeTask.bind(this)}
-                                                      onError={log("errors")} /> : "no form"}
+                                                      onError={log("errors")} >
+                                <div>
+                                    <button type='submit' className="btn btn-primary">complete</button>
+                                </div></Form>
+                                : "no form"}
 
                         </div>
                     </div>
