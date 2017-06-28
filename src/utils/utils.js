@@ -1,11 +1,25 @@
 import jwt_decode from 'jwt-decode';
 
+const login = (token) => {
+    setToken(token);
+    setProfile(JSON.stringify(jwt_decode(token)));
+};
+
+const setProfile = (profile) => {
+    localStorage.setItem('profile', profile);
+};
+
 const setToken = (token) => {
     localStorage.setItem('id_token', token);
 };
 
 const getToken = () => {
     return localStorage.getItem('id_token');
+};
+
+const getProfile = () => {
+    const profile = localStorage.getItem('profile');
+    return profile ? JSON.parse(profile) : {};
 };
 
 const loggedIn = () => {
@@ -16,6 +30,7 @@ const loggedIn = () => {
 
 const logout = () => {
     localStorage.removeItem('id_token');
+    localStorage.removeItem('profile');
 };
 
 const getType = (type) => {
@@ -29,4 +44,4 @@ const getType = (type) => {
     return types[type];
 };
 
-export { setToken, getToken, loggedIn, logout, getType };
+export { setToken, getToken, loggedIn, logout, getType, login, getProfile };

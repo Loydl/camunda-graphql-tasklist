@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { setToken } from '../utils/utils';
+import { login } from '../utils/utils';
 
 class Login extends React.Component {
 
@@ -42,7 +42,7 @@ class Login extends React.Component {
         }).then(res => {
             if (res.ok) {
                 res.text().then(token => {
-                    setToken(token);
+                    login(token);
                     this.setState({
                         loading: false,
                         redirectToReferrer: true

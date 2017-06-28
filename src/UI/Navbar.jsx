@@ -1,5 +1,5 @@
 import React from 'react';
-import { loggedIn, logout } from '../utils/utils';
+import { loggedIn, logout, getProfile } from '../utils/utils';
 import { withRouter, Link } from 'react-router-dom';
 
 const Navbar = ({ history }) => {
@@ -17,6 +17,8 @@ const Navbar = ({ history }) => {
                         history.push('/')
                     }}>logout</a></li>
                         : null }
+
+                    { loggedIn() ? <b><p className="navbar-text">Welcome, {getProfile().username}!</p></b> : null}
                 </ul>
             </div>
         </nav>
