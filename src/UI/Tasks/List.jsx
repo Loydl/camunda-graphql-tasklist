@@ -3,6 +3,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Route, NavLink } from 'react-router-dom';
 import moment from 'moment';
+import { getProfile } from '../../utils/utils';
 
 import Task from './Task';
 
@@ -52,7 +53,7 @@ export { query };
 export default graphql(query, {
     options: ({ match }) => ({
         variables: {
-            assignee: match.params.userId === 'myTasks' ? 'demo' : null
+            assignee: match.params.userId === 'myTasks' ? getProfile().username : null
         },
         forceFetch: true
     })
