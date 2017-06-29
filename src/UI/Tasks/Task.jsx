@@ -3,7 +3,7 @@ import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import Form from 'react-jsonschema-form';
 import _ from 'underscore';
-import { getType } from '../../utils/utils';
+import { getType, getProfile } from '../../utils/utils';
 import { query as tasks } from './List';
 
 const log = (type) => console.log.bind(console, type);
@@ -73,10 +73,10 @@ class Task extends React.Component {
         const { history, claimTask, data: {task }} = this.props;
 
         claimTask({
-            variables: { taskId: task.id},
+            variables: { taskId: task.id, userId: getProfile().username},
             refetchQueries: [{
                 query: tasks,
-                variables: { assignee: 'demo' },
+                variables: { assignee: getProfile().username },
             }],
         })
             .then(({ data }) => {
@@ -143,8 +143,8 @@ const query = gql`
 `;
 
 const claimTask = gql`
-    mutation Mutaion($taskId: String!) {
-        claimTask(taskId: $taskId userId: "demo") {
+    mutation Mutaion($taskId: String! $userId: String!) {
+        claimTask(taskId: $taskId userId: $userId) {
             id
             assignee {
                 firstName
