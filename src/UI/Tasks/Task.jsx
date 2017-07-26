@@ -1,18 +1,9 @@
 import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
-import Form from 'react-jsonschema-form';
-import _ from 'underscore';
 import { getType, getProfile } from '../../utils/utils';
 import { query as tasks } from './List';
-
-const log = (type) => console.log.bind(console, type);
-
-const template = (json, variables) => {
-    return new Promise((resolve) => resolve(JSON.parse(JSON.stringify(json).replace(/\${(.*?)\}/g, (match, property) => {
-        return _.findWhere(variables, {name: property}).value
-    }))))
-};
+import UmdLoader from 'react-umd-loader';
 
 
 class Task extends React.Component {
@@ -25,30 +16,8 @@ class Task extends React.Component {
         }
     }
 
-    componentDidMount() {
-        const { data: { loading, task } } = this.props;
-        this.setState({ json: null});
-
-        if(!loading && task) fetch(`http://localhost:8080${task.contextPath}/${task.formKey}`)
-            .then(res => res.json())
-            .then(res => template(res, task.variables))
-            .then(json => this.setState({ json }))
-            .catch(err => console.log(err));
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const { data: { loading, task } } = nextProps;
-        this.setState({ json: null});
-
-        if(!loading && task) fetch(`http://localhost:8080${task.contextPath}/${task.formKey}`)
-            .then(res => res.json())
-            .then(res => template(res, task.variables))
-            .then(json => this.setState({ json }))
-            .catch(err => console.log(err));
-    }
-
     completeTask(input) {
-        const { history, completeTask, data: {task }} = this.props;
+        const { history, completeTask, taskQuery: {task }} = this.props;
 
         const variables = Object.entries(input.formData).map(([key, value]) => {
             return { key, value, valueType: getType(input.schema.properties[key].type) }
@@ -69,8 +38,35 @@ class Task extends React.Component {
         })
     }
 
+    getVariables(names) {
+        const { taskVariablesQuery, taskQuery: { task }} = this.props;
+
+        taskVariablesQuery.refetch({
+            names,
+            id: task.id
+        })
+    }
+
+    submit(variables) {
+        const { history, completeTask, taskQuery: { task }} = this.props;
+
+        completeTask({
+            variables: { taskId: task.id, variables},
+            refetchQueries: [{
+                query: tasks,
+                variables: { assignee: null },
+            }],
+        })
+            .then(({ data }) => {
+                console.log(data);
+                history.push(`/tasks/all`)
+            }).catch((error) => {
+            console.log('there was an error sending the query', error);
+        })
+    }
+
     claimTask() {
-        const { history, claimTask, data: {task }} = this.props;
+        const { history, claimTask, taskQuery: { task }} = this.props;
 
         claimTask({
             variables: { taskId: task.id, userId: getProfile().username},
@@ -87,8 +83,18 @@ class Task extends React.Component {
         })
     }
 
+    setVariables(variables) {
+        return variables.map(variable => {
+            if(variable.valueType == 'object') {
+                return {value: JSON.parse(variable.value), valueType: variable.valueType, key: variable.key};
+            } else {
+                return variable;
+            }
+        });
+    }
+
     render() {
-        const { data: { loading, error, task }} = this.props;
+        const { taskQuery: { loading, error, task }, taskVariablesQuery: { taskVariables }} = this.props;
 
         if(loading) return <p>loading...</p>;
         if(error) return <div className="alert alert-danger" role="alert">{error.message}</div>;
@@ -98,21 +104,19 @@ class Task extends React.Component {
                 <div className='panel-heading'>{task.name ? task.name : 'no name'}</div>
                 <div className='panel-body'>
                     <h4>{task.processDefinition.name}</h4>
-                    <p>Assignee: <bold>{task.assignee ? task.assignee.firstName : <button onClick={this.claimTask.bind(this)} className='btn btn-default'>Claim</button>}</bold></p>
+                    <p>Assignee: <bold>{task.assignee ? task.assignee.id : <button onClick={this.claimTask.bind(this)} className='btn btn-default'>Claim</button>}</bold></p>
                 </div>
                 <div className='container-fluid'>
                     <div className='panel panel-primary'>
                         <div className='panel-heading'>Form</div>
                         <div className='panel-body'>
-                            { this.state.json ? <Form schema={this.state.json}
-                                                      onChange={log("changed")}
-                                                      onSubmit={this.completeTask.bind(this)}
-                                                      onError={log("errors")} >
-                                <div>
-                                    <button type='submit' className="btn btn-primary">complete</button>
-                                </div></Form>
-                                : "no form"}
-
+                            { task.formKey ?
+                                <UmdLoader url={`http://localhost:8080${task.contextPath}/${task.formKey}`} name="lib" props={{variables: this.setVariables(taskVariables), complete: this.submit.bind(this), fetchVariables: this.getVariables.bind(this)}}>
+                                    <p>loading form...</p>
+                                </UmdLoader>
+                                :
+                                null
+                            }
                         </div>
                     </div>
                 </div>
@@ -121,7 +125,7 @@ class Task extends React.Component {
     }
 }
 
-const query = gql`
+const taskQuery = gql`
     query Query($id: String!) {
         task(id: $id) {
             id
@@ -130,14 +134,24 @@ const query = gql`
                 name
             }
             assignee {
-                firstName
+                id
             }
-            formKey
             contextPath
             variables {
                 name
                 value
             }
+            formKey
+        }
+    }
+`;
+
+const taskVariablesQuery = gql`
+    query Query($id: String!, $names: [String]) {
+        taskVariables(taskId: $id, names: $names) {
+            key,
+            value
+            valueType
         }
     }
 `;
@@ -164,7 +178,17 @@ const completeTask = gql`
 export default compose(
     graphql(claimTask, { name: 'claimTask' }),
     graphql(completeTask, { name: 'completeTask' }),
-    graphql(query, {
+    graphql(taskVariablesQuery, {
+        name: "taskVariablesQuery",
+        options: ({ match }) => ({
+            variables: {
+                id: match.params.taskId,
+                names: []
+            }
+        })
+    }),
+    graphql(taskQuery, {
+        name: "taskQuery",
         options: ({ match }) => ({
             variables: {
                 id: match.params.taskId
