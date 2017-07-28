@@ -54,13 +54,17 @@ class Task extends React.Component {
     }
 
     setVariables(variables) {
-        return variables.map(variable => {
-            if(variable.valueType == 'object') {
-                return {value: JSON.parse(variable.value), valueType: variable.valueType, key: variable.key};
-            } else {
-                return variable;
-            }
-        });
+        if(variables){
+            return variables.map(variable => {
+                if(variable.valueType == 'object') {
+                    return {value: JSON.parse(variable.value), valueType: variable.valueType, key: variable.key};
+                } else {
+                    return variable;
+                }
+            });
+        } else {
+           return [];
+        }
     }
 
     render() {
@@ -81,7 +85,7 @@ class Task extends React.Component {
                         <div className='panel-heading'>Form</div>
                         <div className='panel-body'>
                             { task.formKey ?
-                                <UmdLoader url={`http://localhost:8080${task.contextPath}/${task.formKey}`} name="lib" props={{variables: this.setVariables(taskVariables), complete: this.submit.bind(this), fetchVariables: this.getVariables.bind(this)}}>
+                                <UmdLoader url={`http://localhost:8080${task.contextPath}/${task.formKey}`} name={task.formKey.split('/').pop().split('.')[0]} props={{variables: this.setVariables(taskVariables), complete: this.submit.bind(this), fetchVariables: this.getVariables.bind(this)}}>
                                     <p>loading form...</p>
                                 </UmdLoader>
                                 :

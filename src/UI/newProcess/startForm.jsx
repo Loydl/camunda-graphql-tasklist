@@ -65,7 +65,7 @@ class startForm extends React.Component {
                         <div className='panel-heading'>Form</div>
                         <div className='panel-body'>
                             {  processDefinition.startFormKey ?
-                                <UmdLoader url={`http://localhost:8080${processDefinition.contextPath}/${processDefinition.startFormKey}`} name="lib" props={{ submit: this.createProcessInstanceWithVariables.bind(this) }}>
+                                <UmdLoader url={`http://localhost:8080${processDefinition.contextPath}/${processDefinition.startFormKey}`} name={processDefinition.startFormKey.split('/').pop().split('.')[0]} props={{ submit: this.createProcessInstanceWithVariables.bind(this) }}>
                                     <p>loading form...</p>
                                 </UmdLoader>
                                 :
