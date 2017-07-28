@@ -1,48 +1,16 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { graphql, compose } from 'react-apollo';
-import Form from 'react-jsonschema-form';
-import { getType } from '../../utils/utils';
 import { query as tasks } from '../Tasks/List';
+import UmdLoader from 'react-umd-loader';
 
-const log = (type) => console.log.bind(console, type);
+
 
 class startForm extends React.Component {
 
-    constructor() {
-        super();
-
-        this.state = {
-            json: null
-        }
-    }
-
-    componentDidMount() {
-        const { data: { loading, processDefinition } } = this.props;
-        this.setState({ json: null});
-
-        if(!loading && processDefinition.startFormKey) fetch(`http://localhost:8080${processDefinition.contextPath}/${processDefinition.startFormKey}`)
-            .then(res => res.json())
-            .then(json => this.setState({ json }))
-            .catch(err => console.log(err));
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const { data: { loading, processDefinition } } = nextProps;
-        this.setState({ json: null});
-
-        if(!loading && processDefinition.startFormKey) fetch(`http://localhost:8080${processDefinition.contextPath}/${processDefinition.startFormKey}`)
-            .then(res => res.json())
-            .then(json => this.setState({ json }))
-            .catch(err => console.log(err));
-    }
-
-    createProcessInstanceWithVariables(input) {
+    createProcessInstanceWithVariables(variables) {
         const { history, createProcessInstance, data: { processDefinition }} = this.props;
-
-        const variables = Object.entries(input.formData).map(([key, value]) => {
-            return { key, value, valueType: getType(input.schema.properties[key].type)}
-        });
+        console.log(processDefinition)
 
         createProcessInstance({
             variables: { key: processDefinition.key, variables},
@@ -96,16 +64,13 @@ class startForm extends React.Component {
                     <div className='panel panel-primary'>
                         <div className='panel-heading'>Form</div>
                         <div className='panel-body'>
-                            { this.state.json ?
-                                <Form schema={this.state.json}
-                                                      onChange={log("changed")}
-                                                      onSubmit={this.createProcessInstanceWithVariables.bind(this)}
-                                                      onError={log("errors")} >
-                                    <div>
-                                        <button type='submit' className="btn btn-primary">start</button>
-                                    </div>
-                                </Form>
-                                : "no form"}
+                            {  processDefinition.startFormKey ?
+                                <UmdLoader url={`http://localhost:8080${processDefinition.contextPath}/${processDefinition.startFormKey}`} name="lib" props={{ submit: this.createProcessInstanceWithVariables.bind(this) }}>
+                                    <p>loading form...</p>
+                                </UmdLoader>
+                                :
+                                null
+                            }
                             { !processDefinition.startFormKey ? <button className='btn btn-default' onClick={this.createProcessInstance.bind(this)}>create</button> : null }
                         </div>
                     </div>

@@ -8,36 +8,6 @@ import UmdLoader from 'react-umd-loader';
 
 class Task extends React.Component {
 
-    constructor() {
-        super();
-
-        this.state = {
-            json: null
-        }
-    }
-
-    completeTask(input) {
-        const { history, completeTask, taskQuery: {task }} = this.props;
-
-        const variables = Object.entries(input.formData).map(([key, value]) => {
-            return { key, value, valueType: getType(input.schema.properties[key].type) }
-        });
-
-        completeTask({
-            variables: { taskId: task.id, variables},
-            refetchQueries: [{
-                query: tasks,
-                variables: { assignee: null },
-            }],
-        })
-            .then(({ data }) => {
-                console.log(data);
-                history.push(`/tasks/all`)
-            }).catch((error) => {
-            console.log('there was an error sending the query', error);
-        })
-    }
-
     getVariables(names) {
         const { taskVariablesQuery, taskQuery: { task }} = this.props;
 
@@ -137,10 +107,6 @@ const taskQuery = gql`
                 id
             }
             contextPath
-            variables {
-                name
-                value
-            }
             formKey
         }
     }
