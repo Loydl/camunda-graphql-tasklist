@@ -1,18 +1,12 @@
-# camunda-graphql-tasklist
+camunda-graphql-tasklist
+========================
 
-Showcase of a client app for [Camunda BPM GraphQL](https://github.com/camunda/camunda-bpm-graphql).
+A Tasklist using [GraphQL](https://github.com/camunda/camunda-bpm-graphql) to communicate with the Camunda BPM Server. <br>
 
-_Todo: add screenshot_
+## Client Technology
+- [Apollo-Client](http://dev.apollodata.com/) <br>
+- [React.js](https://facebook.github.io/react/)
 
-## Advantages 
-
-- [GraphQL](graphql.org) and [GraphiQL](https://github.com/graphql/graphiql)<br> 
-- freedom to choose the GUI library you prefer<br>
-- get your JavaScript GUI (or node.js) professionals on Camunda BPM 
-- easy to understand Camunda GraphQL API<br> 
-- quick prototyping and development <br>
-
-In this project we showcase the usage of [Apollo-Client](http://dev.apollodata.com/) and [React.js](https://facebook.github.io/react/)
 ## Installation
 
 `yarn install`
@@ -27,21 +21,15 @@ Port of this client app: <br>
 URL of your Camunda Server with deployed [camunda-bpm-graphql](https://github.com/camunda/camunda-bpm-graphql): <br>
 `CAMUNDA_GRAPHQL_SERVER=http://localhost:8080/graphql/`
 
-
-**Basic Authentication**<br>
-Credentials of a Camunda BPM user to access the Camunda BPM GraphQL Server
-
-LOGIN_NAME=demo <br>
-LOGIN_PASSWORD=demo
-
-Future update: Login via GUI
-
+JWT Provider: <br>
+`JWTAuthProvider=http://localhost:8080/auth/jwt` <br>
+(please check JWT installation instructions at https://github.com/camunda/camunda-bpm-graphql#jwt-json-web-token-authentication)
 
 ## Start client (Dev Server)
 `yarn run dev` <br>
 
-open http://localhost:3000 <br> 
-or http://localhost:<WEBPACK_DEV_SERVER_PORT> <br>
+open `http://localhost:<WEBPACK_DEV_SERVER_PORT>` <br> 
+e.g. http://localhost:3000 <br>
 
 ## source code explained 
 `index.html` and `index.jsx` - pretty much standard React.js with apollo-client<br>
@@ -51,4 +39,4 @@ or http://localhost:<WEBPACK_DEV_SERVER_PORT> <br>
 `UI/Tasks/Task.jsx` - renders the details of a selected task based on a GraphQL query 
 
 ## custom forms
-to be defined 
+are defined in the Camunda Process Application
