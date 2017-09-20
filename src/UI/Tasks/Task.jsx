@@ -56,7 +56,7 @@ class Task extends React.Component {
     setVariables(variables) {
         if(variables){
             return variables.map(variable => {
-                if(variable.valueType == 'object') {
+                if(variable.valueType == 'object' || 'PrimitiveValueType[string]') {
                     return {value: JSON.parse(variable.value), valueType: variable.valueType, key: variable.key};
                 } else {
                     return variable;
