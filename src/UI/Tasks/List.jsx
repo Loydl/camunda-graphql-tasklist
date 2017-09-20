@@ -21,7 +21,7 @@ const List = ({ match, data: { loading, tasks, error } }) => {
 
         return (
             <div className='list-group'>
-                { sortTasks([...tasks]).map(task => <NavLink key={task.id} activeClassName='active' className='list-group-item' to={`${match.url}/${task.id}`}>{task.name ? task.name : 'no name'}<b className='pull-right'>{ moment(task.createTime, 'ddd MMM DD HH:mm:ss Z YYYY').fromNow()}</b></NavLink>) }
+                { sortTasks([...tasks]).map(task => <NavLink key={task.id} activeClassName='active' className='list-group-item' to={`${match.url}/${task.id}`}>{task.name ? task.name : 'no name'}<b className='float-right'>{ moment(task.createTime, 'ddd MMM DD HH:mm:ss Z YYYY').fromNow()}</b></NavLink>) }
             </div>
         );
     }

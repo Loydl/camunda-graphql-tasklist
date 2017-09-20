@@ -10,7 +10,7 @@ class startForm extends React.Component {
 
     createProcessInstanceWithVariables(variables) {
         const { history, createProcessInstance, data: { processDefinition }} = this.props;
-        console.log(processDefinition)
+        console.log(processDefinition);
 
         createProcessInstance({
             variables: { key: processDefinition.key, variables},
@@ -54,26 +54,21 @@ class startForm extends React.Component {
         if(error) return <div className="alert alert-danger" role="alert">{error.message}</div>;
 
         return (
-            <div className='panel panel-default'>
-                <div className='panel-heading'>{processDefinition.name ? processDefinition.name : 'no name'}</div>
-                <div className='panel-body'>
-                    <h4>{processDefinition.versionTag}</h4>
-                    <p>{processDefinition.description}</p>
-                </div>
+            <div className='container-fluid bg-light pt-3 pb-5 border rounded'>
+                <h4 className='panel-heading'>{processDefinition.name ? processDefinition.name : 'no name'}</h4>
+                <h5>{processDefinition.versionTag}</h5>
+                <p>{processDefinition.description}</p>
+                <hr/>
+                <p>Form</p>
                 <div className='container-fluid'>
-                    <div className='panel panel-primary'>
-                        <div className='panel-heading'>Form</div>
-                        <div className='panel-body'>
-                            {  processDefinition.startFormKey ?
-                                <UmdLoader url={`http://localhost:8080${processDefinition.contextPath}/${processDefinition.startFormKey}`} name={processDefinition.startFormKey.split('/').pop().split('.')[0]} props={{ submit: this.createProcessInstanceWithVariables.bind(this) }}>
-                                    <p>loading form...</p>
-                                </UmdLoader>
-                                :
-                                null
-                            }
-                            { !processDefinition.startFormKey ? <button className='btn btn-default' onClick={this.createProcessInstance.bind(this)}>create</button> : null }
-                        </div>
-                    </div>
+                    {  processDefinition.startFormKey ?
+                        <UmdLoader url={`http://localhost:8080${processDefinition.contextPath}/${processDefinition.startFormKey}`} name={processDefinition.startFormKey.split('/').pop().split('.')[0]} props={{ submit: this.createProcessInstanceWithVariables.bind(this) }}>
+                            <p>loading form...</p>
+                        </UmdLoader>
+                        :
+                        null
+                    }
+                    { !processDefinition.startFormKey ? <button className='btn btn-default' onClick={this.createProcessInstance.bind(this)}>create</button> : null }
                 </div>
             </div>
         )

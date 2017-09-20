@@ -13,20 +13,23 @@ const newProcess = ({ match, data: { loading, processDefinitions, error }}) => {
 
         return (
             <div className='list-group'>
-                { processDefinitions.map(processDefinition => <NavLink key={processDefinition.id} activeClassName='active' className='list-group-item' to={`${match.url}/${processDefinition.id}`}>{processDefinition.name ? processDefinition.name : 'no name'}</NavLink>) }
+                { processDefinitions.map(processDefinition => <li className="nav-item"><NavLink key={processDefinition.id} activeClassName='active' className='nav-link' to={`${match.url}/${processDefinition.id}`}>{processDefinition.name ? processDefinition.name : 'no name'}</NavLink></li>) }
             </div>
         );
     }
 
     return (
-        <div>
+        <div className="container-fluid">
             <div className='row'>
-                <div className='col-md-5'>
-                    {render()}
-                </div>
-                <div className="col-md-7">
+                <nav className="col-sm-4 col-md-3 d-none d-sm-block bg-light sidebar">
+                    <ul className="nav nav-pills flex-column">
+                        {render()}
+                    </ul>
+                </nav>
+
+                <main className="col-sm-8 ml-sm-auto col-md-9 pt-3" role="main">
                     <Route path={`${match.url}/:processDefinitionId`} component={startForm}/>
-                </div>
+                </main>
             </div>
         </div>
     )

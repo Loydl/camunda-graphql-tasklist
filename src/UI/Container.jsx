@@ -18,7 +18,7 @@ class Container extends React.Component {
         }
 
         return (
-            <div className='container-fluid'>
+            <div>
                 <Navbar />
                 <Route path='/login' component={Login}/>
                 <ProtectedRoute path='/tasks' component={TasksContainer}/>
