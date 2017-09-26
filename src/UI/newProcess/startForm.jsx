@@ -55,9 +55,9 @@ class startForm extends React.Component {
 
         return (
             <div className='container-fluid bg-light pt-3 pb-5 border rounded'>
-                <h4 className='panel-heading'>{processDefinition.name ? processDefinition.name : 'no name'}</h4>
-                <h5>{processDefinition.versionTag}</h5>
-                <p>{processDefinition.description}</p>
+                <h4>{processDefinition.name ? processDefinition.name : 'no name'}</h4>
+                <h5>{processDefinition.versionTag ? processDefinition.versionTag : 'no versionTag'}</h5>
+                <p>{processDefinition.description ? processDefinition.description : 'no description'}</p>
                 <hr/>
                 <p>Form</p>
                 <div className='container-fluid'>

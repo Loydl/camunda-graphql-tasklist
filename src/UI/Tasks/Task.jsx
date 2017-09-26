@@ -78,18 +78,15 @@ class Task extends React.Component {
                 <h3>{task.name ? task.name : 'no name'}</h3>
                 <h4>{task.processDefinition.name}</h4>
                 <p>Assignee: <bold>{task.assignee ? task.assignee.id : <button onClick={this.claimTask.bind(this)} className='btn btn-default'>Claim</button>}</bold></p>
-
-                <div className='panel panel-primary'>
-                    <div className='panel-heading'>Form</div>
-                    <div className='panel-body'>
-                        { task.formKey ?
-                            <UmdLoader url={`http://localhost:8080${task.contextPath}/${task.formKey}`} name={task.formKey.split('/').pop().split('.')[0]} props={{variables: this.setVariables(taskVariables), complete: this.submit.bind(this), fetchVariables: this.getVariables.bind(this)}}>
-                                <p>loading form...</p>
-                            </UmdLoader>
-                            :
-                            null
-                        }
-                    </div>
+                <p>Form</p>
+                <div className='container-fluid'>
+                    { task.formKey ?
+                        <UmdLoader url={`http://localhost:8080${task.contextPath}/${task.formKey}`} name={task.formKey.split('/').pop().split('.')[0]} props={{variables: this.setVariables(taskVariables), complete: this.submit.bind(this), fetchVariables: this.getVariables.bind(this)}}>
+                            <p>loading form...</p>
+                        </UmdLoader>
+                        :
+                        null
+                    }
                 </div>
             </div>
         );
