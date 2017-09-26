@@ -79,25 +79,45 @@ class Login extends React.Component {
         }
 
         return (
-            <div className='row'>
-                <div className='col-md-4 col-md-offset-4'>
-                    <div className='page-header'>
-                        <h1>login</h1>
+            <div className='container'>
+                <div className="row justify-content-md-center pt-3">
+                    <div className="col-md-auto">
+                        <div className="container-fluid bg-light pt-3 pb-3 border rounded">
+                            <div className='page-header'>
+                                <h1>login</h1>
+                            </div>
+                            { error ? <div className="alert alert-danger">{ error.message }</div> : null}
+                            <p>You must log in to view the page at {from.pathname}</p>
+                            <form onSubmit={(event) => this.submitLogin(event)}>
+                                <div className='form-group'>
+                                    <label>username</label>
+                                    <input type="text" value={username} onChange={(event) => this.setState({ username: event.target.value })} className="form-control" />
+                                </div>
+                                <div className='form-group'>
+                                    <label>password</label>
+                                    <input type="password" value={password} onChange={(event) => this.setState({ password: event.target.value })} className="form-control" />
+                                </div>
+                                <button type="submit" className="btn btn-default">Submit</button>
+                            </form>
+                        </div>
                     </div>
-                    { error ? <div className="alert alert-danger">{ error.message }</div> : null}
-                    <p>You must log in to view the page at {from.pathname}</p>
-                    <form onSubmit={(event) => this.submitLogin(event)}>
-                        <div className='form-group'>
-                            <label>username</label>
-                            <input type="text" value={username} onChange={(event) => this.setState({ username: event.target.value })} className="form-control" />
-                        </div>
-                        <div className='form-group'>
-                            <label>password</label>
-                            <input type="password" value={password} onChange={(event) => this.setState({ password: event.target.value })} className="form-control" />
-                        </div>
-                        <button type="submit" className="btn btn-default pull-right">Submit</button>
-                    </form>
                 </div>
+                {/*<div className='page-header'>
+                    <h1>login</h1>
+                </div>
+                { error ? <div className="alert alert-danger">{ error.message }</div> : null}
+                <p>You must log in to view the page at {from.pathname}</p>
+                <form onSubmit={(event) => this.submitLogin(event)}>
+                    <div className='form-group'>
+                        <label>username</label>
+                        <input type="text" value={username} onChange={(event) => this.setState({ username: event.target.value })} className="form-control" />
+                    </div>
+                    <div className='form-group'>
+                        <label>password</label>
+                        <input type="password" value={password} onChange={(event) => this.setState({ password: event.target.value })} className="form-control" />
+                    </div>
+                    <button type="submit" className="btn btn-default pull-right">Submit</button>
+                </form>*/}
             </div>
         )
     }
