@@ -13,7 +13,7 @@ const newProcess = ({ match, data: { loading, processDefinitions, error }}) => {
 
         return (
             <div className='list-group'>
-                { processDefinitions.map(processDefinition => <li className="nav-item"><NavLink key={processDefinition.id} activeClassName='active' className='nav-link' to={`${match.url}/${processDefinition.id}`}>{processDefinition.name ? processDefinition.name : 'no name'}</NavLink></li>) }
+                { processDefinitions.map(processDefinition => <li key={processDefinition.id} className="nav-item"><NavLink  activeClassName='active' className='nav-link' to={`${match.url}/${processDefinition.id}`}>{processDefinition.name ? processDefinition.name : 'no name'}</NavLink></li>) }
             </div>
         );
     }
