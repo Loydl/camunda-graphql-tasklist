@@ -1,9 +1,9 @@
 import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
-import { getType, getProfile } from '../../utils/utils';
+import { getProfile } from '../../utils/utils';
 import { query as tasks } from './List';
-import UmdLoader from 'react-umd-loader';
+import UmdLoader from '../../utils/UMDLoader';
 
 
 class Task extends React.Component {

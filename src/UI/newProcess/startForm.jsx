@@ -2,7 +2,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { graphql, compose } from 'react-apollo';
 import { query as tasks } from '../Tasks/List';
-import UmdLoader from 'react-umd-loader';
+import UmdLoader from '../../utils/UMDLoader';
 
 
 
